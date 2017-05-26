@@ -156,14 +156,14 @@ class AttenMgr {
          double latitude = gps.getLatitude();
          double longitude = gps.getLongitude();
          //addr =gps.getCompleteAddressString(latitude,longitude);
-        // if(latitude != 0.0 && longitude != 0.0) {
+         if(latitude != 0.0 && longitude != 0.0) {
              Toast.makeText(context, "Your Location is - \nLat: " + latitude + "\nLong: " +
                      longitude, Toast.LENGTH_LONG).show();
                      return 1;
-        /* }//else{
+        }else{
              Toast.makeText(context, "Try Again", Toast.LENGTH_LONG).show();
          return 0;
-         }*/
+         }
      } else {
          // Can't get location.
          // GPS or network is not enabled.
@@ -200,7 +200,11 @@ class AttenMgr {
             digitalAttendanceMgr = new DigitalAttendanceMgr();
             String time1  = digitalAttendanceMgr.getCurrentTime();
             String date1 = digitalAttendanceMgr.getCurrentDate();
-            String result = date1+","+ time1+","+latitude+","+longitude+"," +enterOtp+","+student.getStudEnrollID()+","+tmDevice+","+androidId;
+            String result = date1+","+
+                    time1+","+latitude+","+longitude+","
+                    +enterOtp+","+student.getStudEnrollID()+ ","+student.getName()+","
+                    +student.getSemester()+","+student.getStream()+","+student.getSection()+","
+                    +tmDevice+","+androidId;
             //Toast.makeText(GiveAttendance.this,result,Toast.LENGTH_LONG).show();
             FileManager fm = new FileManager(myContext,result);
             fm.SaveInInternalCacheStorage(tmDevice);

@@ -32,6 +32,7 @@ public class LoginScreen extends AppCompatActivity implements LoginView{
     static public String getEmail() {return email;}
     LoginMgr lm;
     LoginService service = new LoginService();
+    SessionManager session;
 
     LoginPresenter presenter;
     @Override
@@ -39,11 +40,17 @@ public class LoginScreen extends AppCompatActivity implements LoginView{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        session = new SessionManager(getApplicationContext());
 
         username = (EditText)findViewById(R.id.editText_user);
         password = (EditText)findViewById(R.id.editText_password);
         login_btn = (Button)findViewById(R.id.button_login);
         presenter =  new LoginPresenter(this,service);
+
+        Toast.makeText(getApplicationContext(),
+                "User Login Status: " + session.isUserLoggedIn(),
+                Toast.LENGTH_LONG).show();
+
         Intent intent=getIntent();
         String str = intent.getStringExtra("mystr");//getting value from mainPage(i.e 1/2/3)
         if(str == null) str = 1 +"" ;

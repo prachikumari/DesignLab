@@ -45,7 +45,7 @@ public class LoginMgr {
     public void setPassword(String password) {
         this.password = password;
     }
-
+    SessionManager session;
 
     public void login(Context context)
     {

@@ -42,6 +42,8 @@ public class SplashScreen extends AppCompatActivity implements NetworkStateChang
 
     public ConstraintLayout cl;
     public CoordinatorLayout co;
+    private Intent serviceIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {//execution starts  here
 
@@ -51,6 +53,8 @@ public class SplashScreen extends AppCompatActivity implements NetworkStateChang
 
         cl = (ConstraintLayout) findViewById(R.id.constraintLayout);
         //co = (CoordinatorLayout)findViewById(R.id)
+        serviceIntent = new Intent(getApplicationContext(),MyService.class);
+
         checkConnectivity();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -73,6 +77,7 @@ public class SplashScreen extends AppCompatActivity implements NetworkStateChang
         if (isConnected){
             // Snackbar.make(cl, getString(R.string.internet_connected), Snackbar.LENGTH_LONG).show();
             Toast.makeText(this,getString(R.string.internet_connected),Toast.LENGTH_LONG).show();
+            startService(serviceIntent);
             readData();
         }else {
             /*Snackbar.make(cl, getString(R.string.no_internet_connected), Snackbar.LENGTH_INDEFINITE)
@@ -117,7 +122,6 @@ public class SplashScreen extends AppCompatActivity implements NetworkStateChang
                 //String UPLOAD_URL = "http://192.168.0.107/android_connect/upload_cache.php";
 
                 if (path == null) {
-
                     //Toast.makeText(this, "Sorry", Toast.LENGTH_LONG).show();
                 } else {
                     OkHttpClient client = new OkHttpClient();
@@ -129,7 +133,7 @@ public class SplashScreen extends AppCompatActivity implements NetworkStateChang
                             .addFormDataPart("uploaded_file",name,file_body).build();
 
                     Request request = new Request.Builder()
-                            .url("http://192.168.0.115/android_connect/upload_cache.php")
+                            .url("http://192.168.43.109/android_connect/upload_cache.php")
                             .post(request_body)
                             .build();
 

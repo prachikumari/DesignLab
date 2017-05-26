@@ -30,7 +30,8 @@ public class Student implements Parcelable{
          section = in.readString();
     }
 
-    public Student(String  studEnrollID,String  universityRollNo, String  classRollNo,String  name,String emailID,String  contactNo)
+    public Student(String  studEnrollID,String  universityRollNo, String  classRollNo,String  name,
+                   String emailID,String contactNo,String stream,String semester,String section)
     {
         this.studEnrollID=studEnrollID;
         this.universityRollNo=universityRollNo;
@@ -38,6 +39,9 @@ public class Student implements Parcelable{
         this.name=name;
         this.emailID=emailID;
         this.contactNo=contactNo;
+        this.stream=stream;
+        this.semester=semester;
+        this.section=section;
 
     }
     public static final Creator<Student> CREATOR = new Creator<Student>() {
@@ -137,8 +141,8 @@ public class Student implements Parcelable{
         dest.writeString(name);
         dest.writeString(emailID);
         dest.writeString(contactNo);
-       /* dest.writeString(stream);
+        dest.writeString(stream);
         dest.writeString(semester);
-        dest.writeString(section);*/
+        dest.writeString(section);
     }
 }

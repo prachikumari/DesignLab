@@ -54,7 +54,7 @@ import org.junit.runners.model.Statement;
  *     };
  * }</pre>
  */
-public class ActivityRule<T extends Activity> implements TestRule {
+public class ActivityRule <T extends Activity> implements TestRule {
     private final Class<T> activityClass;
 
     private T activity;

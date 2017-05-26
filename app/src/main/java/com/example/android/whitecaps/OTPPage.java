@@ -84,6 +84,7 @@ Teacher teacher;
                 TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
                 final String tmDevice;
                 tmDevice = "" + tm.getDeviceId();
+                //frm.SaveInInternalCache(tmDevice,teacher.getTeacherCode());
                 frm.SaveInInternalCacheStorage(tmDevice);
                 //frm.LoadFromInternalCacheStorage();
                 dm = new DigitalAttendanceMgr();

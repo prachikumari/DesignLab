@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 /**
@@ -28,6 +29,7 @@ public class FileManager {
 
     Context p;
     String Tresult;
+    boolean append=false;
     //String TOTP,TPeriod,TstartTimeOtp,TendTimeOtp;
     public FileManager(Context context,String result){
         p=context;
@@ -43,25 +45,33 @@ public class FileManager {
     public void SaveInInternalCacheStorage(String imeiNo) {
         File dir = p.getCacheDir();  //return the directory of internal cache in which your file will be created
         File file = new File(dir,"File_"+imeiNo+".csv");  //Creates a new file named MyFile.txt in a folde "dir"
-        writeData(file,Tresult);  //Calling user defined method
+        writeData(file,Tresult,imeiNo);  //Calling user defined method
 
     }
-    public void LoadFromInternalCacheStorage(String imeiNo) {
+    public int LoadFromInternalCacheStorage(String imeiNo) {
         File dir = p.getCacheDir();  //return the directory of internal cache in which your file will be created
         File file = new File(dir,"File_"+imeiNo+".csv");  //Creates a new file named MyFile.txt in a folder "dir"
-        readData(file);  //Calling user defined method
+        int bl = readData(file);  //Calling user defined method
+        return bl;
     }
 
+    DigitalAttendanceMgr digitalAttendanceMgr;
+
     //Writing data into file
-    public void writeData(File file, String text1)
+    public void writeData(File file, String text1,String imei)
     {
         FileOutputStream fileOutputStream=null;
+        int val = LoadFromInternalCacheStorage(imei);
         try {
-            fileOutputStream = new FileOutputStream(file);
+            if(val == 1){
+                append = true;
+            }
+            fileOutputStream = new FileOutputStream(file,append);
 
             //writing the text into the file in the form of char[] bytes ; getBytes will convert string to char[] bytes
             //Text contains OTP,Period,startTimeOtp,endTimeOtp and location of user
             fileOutputStream.write(text1.getBytes());
+            fileOutputStream.write("\n".getBytes());
         } catch (FileNotFoundException e) {e.printStackTrace();
         } catch (IOException e) {e.printStackTrace();}
         finally {
@@ -77,7 +87,7 @@ public class FileManager {
 
 
     //Reading data from file
-    public void readData(File file) {
+    public int readData(File file) {
         FileInputStream fileInputStream = null;
 
         try {
@@ -90,7 +100,21 @@ public class FileManager {
             }
             String showdata = stringBuffer.toString();
             Log.e("Showdata",showdata);
-             doFileUpload(file);
+
+            StringTokenizer st2 = new StringTokenizer(showdata, ",");
+            String dt="";
+            while (st2.hasMoreElements()) {
+                dt = (String) st2.nextElement();
+                break;
+            }
+            Log.e("date",dt);
+            digitalAttendanceMgr = new DigitalAttendanceMgr();
+            String date1 = digitalAttendanceMgr.getCurrentDate();
+            Log.e("today",date1);
+            if(dt.compareTo(date1) == 0){
+                return 1;
+            }
+
         } catch (FileNotFoundException e) {e.printStackTrace();
         } catch (IOException e) {e.printStackTrace();
         } finally {
@@ -101,34 +125,15 @@ public class FileManager {
             }
         }
 
-
+    return 0;
     }
 
-    private void doFileUpload(File file) throws FileNotFoundException {
-        String UPLOAD_URL = "http://192.168.0.106/android_connect/upload.php";
+    public void SaveInInternalCache(String imeiNo, String teacherCode) {
+        File dir = p.getCacheDir();  //return the directory of internal cache in which your file will be created
+        File file = new File(dir,"File_"+imeiNo+"_"+teacherCode+".csv");  //Creates a new file named MyFile.txt in a folde "dir"
+        writeData(file,Tresult,imeiNo);  //Calling user defined method
 
-        //if (path == null) {
-       // } else {
-            //Uploading code
-            try {
-                String uploadId = UUID.randomUUID().toString();
-
-                //Creating a multi part request
-                /*new MultipartUploadRequest(this, uploadId, UPLOAD_URL)
-                        .addFileToUpload(path, "csv") //Adding file
-                        .addParameter("name", name) //Adding text parameter to the request
-                        .setNotificationConfig(new UploadNotificationConfig())
-                        .setMaxRetries(2)
-                        .startUpload(); //Starting the upload*/
-
-
-            } catch (Exception exc) {
-                Log.e("Exception",exc.getMessage());
-            }
-     //   }
     }
-
-
 }
 
 

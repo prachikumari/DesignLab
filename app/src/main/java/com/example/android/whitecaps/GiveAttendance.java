@@ -22,10 +22,9 @@ public class GiveAttendance extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        enterotp = (EditText) findViewById(R.id.otpvalue);
-        submit = (Button) findViewById(R.id.submit);
+
         setContentView(R.layout.activity_give_attendance);
-        mDigitalAttendanceMgr = new DigitalAttendanceMgr();
+
         Intent intent = getIntent();
         student = intent.getParcelableExtra("student");
         latitude = intent.getDoubleExtra("latitude", 0.0);
@@ -33,6 +32,9 @@ public class GiveAttendance extends AppCompatActivity {
 
         studentId = student.getStudEnrollID();
         studname = student.getName();
+        mDigitalAttendanceMgr = new DigitalAttendanceMgr();
+        enterotp = (EditText) findViewById(R.id.otpvalue);
+        submit = (Button) findViewById(R.id.submit);
         btnclick();
     }
 

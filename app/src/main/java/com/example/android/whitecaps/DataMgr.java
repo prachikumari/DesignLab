@@ -120,7 +120,9 @@ public class DataMgr extends SQLiteOpenHelper {
 
                 student = new Student(cr.getString(cr.getColumnIndex("_id")),cr.getString(cr.getColumnIndex("UnivRollNo")),
                         cr.getString(cr.getColumnIndex("ClassRoll")),cr.getString(cr.getColumnIndex("Name"))
-                        ,cr.getString(cr.getColumnIndex("Emailid")),cr.getString(cr.getColumnIndex("Password")));
+                        ,cr.getString(cr.getColumnIndex("Emailid")),cr.getString(cr.getColumnIndex("Password")),
+                        cr.getString(cr.getColumnIndex("Stream")),cr.getString(cr.getColumnIndex("Semester")),
+                        cr.getString(cr.getColumnIndex("Section")));
                /* student.setStudEnrollID(cr.getString(cr.getColumnIndex("_id")));
                 student.setUniversityRollNo(cr.getString(cr.getColumnIndex("UnivRollNo")));
                 student.setClassRollNo(cr.getString(cr.getColumnIndex("ClassRoll")));
