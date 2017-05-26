@@ -1,12 +1,16 @@
  package com.example.android.whitecaps;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.icu.text.SimpleDateFormat;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
@@ -65,17 +69,25 @@ public class DataMgr extends SQLiteOpenHelper {
 
     private static String DB_NAME = "ATTENDANCESYSTEM";//DatabaseName
     private final Context myContext;
+    private Routine mRoutine;
     private String DB_PATH = null;
     private SQLiteDatabase myDataBase;
     public static final int DATABASE_VERSION = 10;//Version of Database
-
+    AttenMgr mAttenMgr;
     //DataMgr Constructor
     public DataMgr(Context context) {
         super(context, DB_NAME, null, DATABASE_VERSION);
         this.myContext = context;
         this.DB_PATH = "/data/data/" + context.getPackageName() + "/" + "databases/";
         }
-    //Reads Database and copies it in case of any change in database
+    public DataMgr(Context context,AttenMgr attenMgr) {
+        super(context, DB_NAME, null, DATABASE_VERSION);
+        this.myContext = context;
+        this.DB_PATH = "/data/data/" + context.getPackageName() + "/" + "databases/";
+        mAttenMgr=attenMgr;
+    }
+    //Reads Database and copies it in case of any c
+    // hange in database
     public void createDataBase() throws IOException {
         boolean dbExist = checkDataBase();
             this.getReadableDatabase();
@@ -98,24 +110,92 @@ public class DataMgr extends SQLiteOpenHelper {
 
     }
 
-    //searching password corresponding to valid username
-    public String searchPass(String user,String table){
-        myDataBase = this.getReadableDatabase();
-        String query = "select * from "+table;
-        Cursor cr =  myDataBase.rawQuery(query,null);
-        String a,b;
-        b="not found";
-        if(cr.moveToFirst()){
+    public Student readStudent(String email,String table,Student student) {
+        String query = "select * from '" + table + "' where Emailid='" + email.trim() + "'";
+        Cursor cr = myDataBase.rawQuery(query, null);
+        // String a,b;
+        //b="not found";
+        if (cr.moveToFirst()) {
             do {
-                a=cr.getString(cr.getColumnIndex("Emailid"));
-                if(a.equals(user)){
-                    b=cr.getString(cr.getColumnIndex("Password"));
+
+                student = new Student(cr.getString(cr.getColumnIndex("_id")),cr.getString(cr.getColumnIndex("UnivRollNo")),
+                        cr.getString(cr.getColumnIndex("ClassRoll")),cr.getString(cr.getColumnIndex("Name"))
+                        ,cr.getString(cr.getColumnIndex("Emailid")),cr.getString(cr.getColumnIndex("Password")));
+               /* student.setStudEnrollID(cr.getString(cr.getColumnIndex("_id")));
+                student.setUniversityRollNo(cr.getString(cr.getColumnIndex("UnivRollNo")));
+                student.setClassRollNo(cr.getString(cr.getColumnIndex("ClassRoll")));
+                student.setName(cr.getString(cr.getColumnIndex("Name")));
+                student.setEmailID(cr.getString(cr.getColumnIndex("Emailid")));
+               // student.setStream(cr.getString(cr.getColumnIndex("Stream")));
+               // student.setSemester(cr.getString(cr.getColumnIndex("Semester")));
+                //student.setSection(cr.getString(cr.getColumnIndex("Section")));*/
+            } while (cr.moveToNext());
+            cr.close();
+        }
+        return student;
+    }
+
+    public Teacher readTeacher(String email,String table) {
+        String query = "select * from '" + table + "' where Emailid='" + email.trim() + "'";
+        Cursor cr = myDataBase.rawQuery(query, null);
+        Teacher teacher = null;
+        // String a,b;
+        //b="not found";
+        if (cr.moveToFirst()) {
+            do {
+                  teacher = new Teacher(cr.getString(cr.getColumnIndex("Name")),cr.getString(cr.getColumnIndex("Emailid")),
+                          cr.getString(cr.getColumnIndex("Teachercode")),cr.getString(cr.getColumnIndex("Contact"))
+                                  ,cr.getString(cr.getColumnIndex("Teacherid")));
+               /* teacher.setTeacherId(cr.getString(cr.getColumnIndex("Teacherid")));
+                teacher.setContactNo(cr.getString(cr.getColumnIndex("Contact")));
+                teacher.setTeacherCode(cr.getString(cr.getColumnIndex("Teachercode")));
+                teacher.setName(cr.getString(cr.getColumnIndex("Name")));
+                teacher.setEmailID(cr.getString(cr.getColumnIndex("Emailid")));
+*/
+            } while (cr.moveToNext());
+            cr.close();
+        }
+        return  teacher;
+    }
+    public Admin readAdmin(String email,String table,Admin admin) {
+        String query = "select * from '" + table + "' where Emailid='" + email.trim() + "'";
+        Cursor cr = myDataBase.rawQuery(query, null);
+        // String a,b;
+        //b="not found";
+        if (cr.moveToFirst()) {
+            do {
+                admin = new Admin(cr.getString(cr.getColumnIndex("_id")),cr.getString(cr.getColumnIndex("Contact")),
+                        cr.getString(cr.getColumnIndex("Address")),cr.getString(cr.getColumnIndex("Name"))
+                        ,cr.getString(cr.getColumnIndex("Emailid")),cr.getString(cr.getColumnIndex("Password")));
+               // admin.setAdminID(cr.getString(cr.getColumnIndex("_id")));
+               // admin.setContactNo(cr.getString(cr.getColumnIndex("Contact")));
+                //admin.set(cr.getString(cr.getColumnIndex("Teachercode")));
+                //admin.setName(cr.getString(cr.getColumnIndex("Name")));
+               // admin.setEmailID(cr.getString(cr.getColumnIndex("Emailid")));
+
+            } while (cr.moveToNext());
+            cr.close();
+        }
+        return  admin;
+    }
+    //searching password corresponding to valid username
+    public String searchPass(String user,String table) {
+        myDataBase = this.getReadableDatabase();
+        String query = "select * from " + table;
+        Cursor cr = myDataBase.rawQuery(query, null);
+        String a, b;
+        b = "not found";
+        if (cr.moveToFirst()) {
+            do {
+                a = cr.getString(cr.getColumnIndex("Emailid"));
+                if (a.equals(user)) {
+                    b = cr.getString(cr.getColumnIndex("Password"));
                     break;
                 }
-            }while (cr.moveToNext());
+            } while (cr.moveToNext());
         }
         cr.close();
-        return b;
+        return b.trim();
     }
 
     //Extracting all the sections present in the routine database
@@ -170,26 +250,19 @@ public class DataMgr extends SQLiteOpenHelper {
     }
 
     //Extracting TeacherName using teachercode from teacher's database
-     public  String gettname(String tcode)
-     {
-            String query = "select * from TEACHER where Teachercode='" + tcode.trim() + "'";
-            Cursor cr = myDataBase.rawQuery(query, null);
-            String tname = null;
-            if (cr.moveToFirst()) {
-                tname = cr.getString(cr.getColumnIndex("Name"));
-            }
-            cr.close();
-            return tname;
-     }
+
 
      //Extracting subjectname using subjectcode from subject database
-     public  String getsubname(String subcode)
+     public  String getsubname(String subcode , Subject subject)
      {
             String query = "select * from SUBJECT where Subcode='" + subcode.trim() + "'";
             Cursor cr = myDataBase.rawQuery(query, null);
             String subname = null;
             if (cr.moveToFirst()) {
-               subname = cr.getString(1);
+               subject.setSubCode(cr.getString(cr.getColumnIndex("Subcode")));
+                subject.setSubName(cr.getString(cr.getColumnIndex("Subname")));
+                subject.settCode(cr.getString(cr.getColumnIndex("Teachercode")));
+
             }
             cr.close();
             return subname;
@@ -375,5 +448,84 @@ public class DataMgr extends SQLiteOpenHelper {
 
             }
     }
-}
 
+    public void getAllroutine(String day,String selectesStream, String selectesSemester, String selectesSection,Routine routine) {
+        this.mRoutine = routine;
+        myDataBase = this.getReadableDatabase();
+        String query = "select * from Routine where day='" + day.trim() + "' and Stream='" + selectesStream.trim() +
+                "' and Semester='" + selectesSemester.trim()  + "' and Sec='" + selectesSection.trim()+ "' ";
+        Cursor cr = myDataBase.rawQuery(query, null);
+       // String a = null;
+        if (cr.moveToFirst()) {
+            do {
+                mRoutine.setDay(cr.getString(cr.getColumnIndex("Day")));
+                mRoutine.setStream(cr.getString(cr.getColumnIndex("Stream")));
+                mRoutine.setSemester(cr.getString(cr.getColumnIndex("Semester")));
+                mRoutine.setPeriod1(cr.getString(cr.getColumnIndex("1")));
+                mRoutine.setPeriod2(cr.getString(cr.getColumnIndex("2")));
+                mRoutine.setPeriod3(cr.getString(cr.getColumnIndex("3")));
+                mRoutine.setPeriod4(cr.getString(cr.getColumnIndex("4")));
+                mRoutine.setPeriod5(cr.getString(cr.getColumnIndex("5")));
+                mRoutine.setPeriod6(cr.getString(cr.getColumnIndex("6")));
+
+
+                // a = cr.getString(cr.getColumnIndex("OTP"));
+            } while (cr.moveToNext());
+        }
+        cr.close();
+
+
+    }
+
+    public String gettname(String s) {
+        myDataBase = this.getReadableDatabase();
+        String query = "select * from Teacher where Teachercode='" + s.trim() + "' ";
+        Cursor cr = myDataBase.rawQuery(query, null);
+         String a = null;
+        if (cr.moveToFirst()) {
+            do {
+
+
+                 a = cr.getString(cr.getColumnIndex("Name"));
+            } while (cr.moveToNext());
+        }
+        cr.close();
+    return  a;
+    }
+
+
+    public void showConfirmation(Subject subject , final RoutineMgr routineMgr)
+    {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(myContext);
+
+        alertDialog.setTitle("Confirmation");
+        alertDialog.setMessage(subject.getSubName()+ " for " + routineMgr.getSelectedStream() + "," + " Semester " +  routineMgr.getSelectedSemester() + "during Period" + routineMgr.getSelectedPeriod()+ "is assigned to" + subject.gettName());
+        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+               DigitalAttendanceMgr atmr = new DigitalAttendanceMgr();
+                String classid = getclssid(routineMgr.getSelectedStream(),routineMgr.getSelectedSemester(),routineMgr.getSelectedSection());
+                //routineMgr.setClassId(classid);
+                 //String Otp = getOTP(classid,routineMgr.getSelectedPeriod(),routineMgr.getSelectedDay());
+                 mAttenMgr.extractOtp(classid);
+
+
+                //              // if yes clicked generateOTP in AttenMgr is called
+                //            atr.generateOTP(routinemgr.getDay(), routinemgr.getPeriod(), routinemgr.getStream(mySpinner),
+                //
+                //                 routinemgr.getSemester(), routinemgr.getSection(), dataMgr, TakeAttendance.this);
+            }
+        });
+        alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //  if no clicked values are set to default
+                TakeAttendance.reset();
+                dialog.cancel();
+
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
+}

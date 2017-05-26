@@ -1,9 +1,8 @@
 package com.example.android.whitecaps;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
+import android.test.AndroidTestCase;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,62 +11,53 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.AllOf.allOf;
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
- * Created by Pramod on 06/05/17.
+ * Created by Pramod on 12/05/17.
  */
 @RunWith(JUnit4.class)
-public class TakeAttendanceTest {
-  AttenMgr atmr;
-   // DataMgr dm = new DataMgr(getContext());
-RoutineMgr rm;
-    TakeAttendance t;
-   @Rule
-   public ActivityTestRule<TakeAttendance> atr = new ActivityTestRule<TakeAttendance>(TakeAttendance.class,true,false);
+public class TakeAttendanceTest extends AndroidTestCase{
 
+   @Rule
+    public ActivityTestRule<TakeAttendance> take = new ActivityTestRule<TakeAttendance>(TakeAttendance.class);
+    RoutineMgr mRoutineMgr , mMgr;
+    Teacher mTeacher;
+    Context context = getInstrumentation().getTargetContext().getApplicationContext();
+    Subject mSubject;
     @Before
     public void setUp() throws Exception {
-        Context targetContext = InstrumentationRegistry.getInstrumentation()
-                .getTargetContext();
-        atmr=new AttenMgr(targetContext,"tamal@gmail.com");
-       // atmr.takeAttendance();
-    //atmr.setUseremail("tamal@gmal.com");
+    mRoutineMgr = new RoutineMgr(context , mTeacher,4.4555,4.555);
+     //RoutineMgr = new RoutineMgr(context , mTeacher,4.4555,4.555);
+     mRoutineMgr.setSelectedStream("CSE");
+     mRoutineMgr.setSelectedSemester("1");
+     mRoutineMgr.setSelectedSection("A");
+     mRoutineMgr.setSelectedPeriod("1");;
+     mRoutineMgr.setSelectedDay("Tuesday");
+
+     mSubject = new Subject();
+     mSubject.settCode("TC");
     }
+
     @Test
-    public void launc()
+    public  void launch()
     {
-        Intent i = new Intent();
-       i.putExtra("var",atmr);
-        atr.launchActivity(i);
-        onView(withId(R.id.spinner1)).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is("CSE"))).perform(click());
-        onView(withId(R.id.spinner2)).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is("1"))).perform(click());
-        onView(withId(R.id.spinner3)).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is("A"))).perform(click());
-        onView(withId(R.id.spinner4)).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is("1"))).perform(click());
-     rm = new RoutineMgr("tamal@gmail.com",t,"CSE",
-             "1", "1","A","Tuesday" );
-        assertEquals("CSE",rm.getStream());
-        //onView(withId(R.id.textView)).check(matches((Matcher<? super View>) isNotNull()));
+       // onView(withId(R.id.spinner1)).perform(click());
 
+    assertEquals("Tamal Chakraborty",mRoutineMgr.getTeacherName(mSubject.gettCode()));
+     assertEquals(true, mRoutineMgr.checkEmptyFields(mSubject));
 
-
-        //onView(withId(R.id.spinner1).matches(withSpinnerText(containsString("CSE"))));
-      //  dm.getsubname("EEE");
-
-       // onView(withId(R.id.spinner1)).check(m);
+     mRoutineMgr.setSelectedSection("Section");
+     assertEquals(false , mRoutineMgr.checkEmptyFields(mSubject));
     }
 
+    public void testOTP()
+    {
+     DigitalAttendanceMgr attendanceMgr = new DigitalAttendanceMgr();
+     //attendanceMgr.attenMgr.generateOTP("CSE1011","6","Tuesday",context,mTeacher,mRoutineMgr);
+     //assertEquals("1234",attendanceMgr.attenMgr.getOTP("CSE1011","6","Tuesday"));
+
+    }
 
     @After
     public void tearDown() throws Exception {

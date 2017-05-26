@@ -1,27 +1,51 @@
 package com.example.android.whitecaps;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.provider.Settings;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import java.io.IOException;
-import java.util.List;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class GiveAttendance extends AppCompatActivity {
+
+    EditText enterotp;
+    Button submit;
+    Student student;
+    String studentId, studname;
+    String result;
+    double latitude, longitude;
+    String time1;
+    int length;
+    DigitalAttendanceMgr mDigitalAttendanceMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        enterotp = (EditText) findViewById(R.id.otpvalue);
+        submit = (Button) findViewById(R.id.submit);
         setContentView(R.layout.activity_give_attendance);
+        mDigitalAttendanceMgr = new DigitalAttendanceMgr();
+        Intent intent = getIntent();
+        student = intent.getParcelableExtra("student");
+        latitude = intent.getDoubleExtra("latitude", 0.0);
+        longitude = intent.getDoubleExtra("longitude", 0.0);
 
+        studentId = student.getStudEnrollID();
+        studname = student.getName();
+        btnclick();
     }
 
+    private void btnclick() {
+        submit.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AttenMgr attenMgr = new AttenMgr(GiveAttendance.this);
+                        attenMgr.submit(enterotp.getText().toString(), latitude, longitude, student);
 
+                    }
+                });
 
+    }
 }

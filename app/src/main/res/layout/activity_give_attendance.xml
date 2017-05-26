@@ -19,10 +19,11 @@
         android:hint="Enter OTP"
         android:textAlignment="center"
         android:inputType="number"
+        android:maxLength="4"
         app:layout_constraintHorizontal_bias="0.587" />
 
     <Button
-        android:id="@+id/submitOTP"
+        android:id="@+id/submit"
         android:layout_width="88dp"
         android:layout_height="43dp"
         android:layout_marginLeft="150dp"
@@ -34,6 +35,8 @@
         android:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.778"
         app:layout_constraintVertical_bias="0.111" />
+
+
 
 </RelativeLayout>
 

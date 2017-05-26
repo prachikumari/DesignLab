@@ -13,21 +13,17 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-
-import static android.R.layout.simple_spinner_item;
 //TakeAttendance Page
 public class TakeAttendance extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     Button showDateBtn;
-    AttenMgr atr;
+    //AttenMgr atr;
     int year_x, month_x, day_x;
     static final int DIALOG_ID = 0;
     private TextView subtxt;
@@ -35,21 +31,24 @@ public class TakeAttendance extends AppCompatActivity implements AdapterView.OnI
     RoutineMgr routinemgr;
     DataMgr helper;
     private TextView datefield;
-    Spinner mySpinner;
-    Spinner mySpinner1;
-    Spinner mySpinner2;
-    Spinner mySpinner3;
-    String usermail;
-
+    static Spinner mySpinner;
+    static Spinner mySpinner1;
+    static Spinner mySpinner2;
+    static Spinner mySpinner3;
+    //String usermail;
+    AttenMgr mAttenMgr;
+    double latitude,longitude;
+Teacher teacher;
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {//execution starts here
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_attendance);
         Intent newintent = getIntent();
-        atr = newintent.getExtras().getParcelable("var");//retrieving AttenMgr object
-        usermail = atr.getUseremail();
-
+        teacher = newintent.getParcelableExtra("teacher");//retrieving AttenMgr object
+        //usermail = atr.getUseremail();
+        latitude = newintent.getDoubleExtra("latitude",0.0);
+        longitude= newintent.getDoubleExtra("longitude",0.0);
         //shows the current date by datepicker
         final Calendar cal = Calendar.getInstance();
         year_x = cal.get(Calendar.YEAR);
@@ -58,7 +57,7 @@ public class TakeAttendance extends AppCompatActivity implements AdapterView.OnI
         datefield = (TextView) findViewById(R.id.textView6);
         int m=month_x+1;
         datefield.setText(day_x + "/" + m + "/" + year_x);
-        helper = new DataMgr(TakeAttendance.this);
+        //dataMgr = new DataMgr(TakeAttendance.this);
 
         mySpinner = (Spinner) findViewById(R.id.spinner1);// stream
         mySpinner1 = (Spinner) findViewById(R.id.spinner2);//semester
@@ -68,9 +67,12 @@ public class TakeAttendance extends AppCompatActivity implements AdapterView.OnI
         mySpinner1.setOnItemSelectedListener(TakeAttendance.this);
         otpbutton = (Button) findViewById(R.id.button2);
 
-        final String stream = mySpinner.getSelectedItem().toString();
-        loadStreamListInDropdown();
-        final String semester = mySpinner1.getSelectedItem().toString();
+       // final String stream = mySpinner.getSelectedItem().toString();
+        routinemgr= new RoutineMgr(this , teacher , latitude,longitude);
+
+        routinemgr.getAllStream(mySpinner);
+        // routinemgr.loadStreamListInDropdown();
+       // final String semester = mySpinner1.getSelectedItem().toString();
 
 
         showDialogOnButtonClick();
@@ -78,9 +80,9 @@ public class TakeAttendance extends AppCompatActivity implements AdapterView.OnI
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String section= "Section";
-                        section = mySpinner2.getSelectedItem().toString();
-                        String period = mySpinner3.getSelectedItem().toString();
+                       // String section= "Section";
+                       // section = mySpinner2.getSelectedItem().toString();
+                        //String period = mySpinner3.getSelectedItem().toString();
                         String d = datefield.getText().toString();
                         SimpleDateFormat inFormat = new SimpleDateFormat("dd/M/yyyy");
                         Date date = null;
@@ -93,26 +95,34 @@ public class TakeAttendance extends AppCompatActivity implements AdapterView.OnI
                         }
                         SimpleDateFormat outFormat = new SimpleDateFormat("EEEE");
                         String goal = outFormat.format(date);//extracting day from date
-                        routinemgr = new RoutineMgr(usermail, TakeAttendance.this,mySpinner.getSelectedItem().toString(), mySpinner1.getSelectedItem().toString(), period,section, goal);
+                        routinemgr.setSelectedStream(mySpinner.getSelectedItem().toString());
+                        routinemgr.setSelectedSemester(mySpinner1.getSelectedItem().toString());
+                        routinemgr.setSelectedSection(mySpinner2.getSelectedItem().toString());
+                        routinemgr.setSelectedPeriod(mySpinner3.getSelectedItem().toString());
+                        routinemgr.setSelectedDay(goal);
+                        mAttenMgr = new AttenMgr(TakeAttendance.this,routinemgr);
+                        mAttenMgr.generateOTP();
+                        //mAttenMgr= new AttenMgr();
 
+                         //routinemgr.chckEmptyFields(mySpinner,mySpinner1,mySpinner2,mySpinner3,goal);
                         //Extracting subjectcode along with teachercode from routine database e.g EE101(SMU)
-                        String subname1 = helper.getSub(routinemgr.getStream(), routinemgr.getSemester(),
-                                routinemgr.getSection(), routinemgr.getPeriod(), routinemgr.getDay());
+                        //String subname1 = dataMgr.getSub(routinemgr.getStream(mySpinner), routinemgr.getSemester(),
+                          //      routinemgr.getSection(), routinemgr.getPeriod(), routinemgr.getDay());
 
                         //Seprating subjectcode from teachercode e.g EE101
-                        String subname2 = subname1.substring(0, subname1.indexOf("("));
+                       // String subname2 = subname1.substring(0, subname1.indexOf("("));
 
                         //Seprating teachercode e.g SMU
-                        String tcode = subname1.substring(subname1.indexOf("(") + 1, subname1.indexOf(")"));
+                        //String tcode = subname1.substring(subname1.indexOf("(") + 1, subname1.indexOf(")"));
 
                         //Extracting subjectname corresponding to subjectcode extracted now
-                        String subname = helper.getsubname(subname2);
+                      //  String subname = dataMgr.getsubname(subname2);
 
                         //Extracting teachername corresponding to teachercode extracted now
-                        String tname = helper.gettname(tcode);
+                        //String tname = dataMgr.gettname(tcode);
 
                         //showCnfirmation with a message
-                        showConfirmation(subname, tname);
+                        //showConfirmation(subname, tname);
                     }
                 }
         );
@@ -155,6 +165,15 @@ public class TakeAttendance extends AppCompatActivity implements AdapterView.OnI
         }
     };
 
+
+    public static void reset()
+    {
+        mySpinner.setSelection(0);
+        mySpinner1.setSelection(0);
+        mySpinner2.setSelection(0);
+        mySpinner3.setSelection(0);
+
+    }
     //alert is shown if teacher chooses date other than current date
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void showalertdate(int day, int month, int year)
@@ -181,39 +200,27 @@ public class TakeAttendance extends AppCompatActivity implements AdapterView.OnI
     }
 
     //showalert
-    public void showalert(String s)
-    {
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Missing Fields");
-        alertDialog.setMessage("Please Enter" + s);
-        alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // return;
-            }
-        });
-        alertDialog.show();
-    }
+
 
     //showconfirmation
-    public void showConfirmation(String subject, String tname)
+   /* public void showConfirmation(String subject, String tname)
     {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
         alertDialog.setTitle("Confirmation");
-        alertDialog.setMessage(subject + " for " + routinemgr.getStream() + "," + " Semester " +  routinemgr.getSemester() + " Section" + routinemgr.getSection() + "during" + "Period" + routinemgr.getPeriod() + "is assigned to" + tname);
-        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+       // alertDialog.setMessage(subject + " for " + routinemgr.getStream(mySpinner) + "," + " Semester " +  routinemgr.getSemester() + " Section" + routinemgr.getSection() + "during" + "Period" + routinemgr.getPeriod() + "is assigned to" + tname);
+//        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
-                // if yes clicked generateOTP in AttenMgr is called
-                atr.generateOTP(routinemgr.getDay(), routinemgr.getPeriod(), routinemgr.getStream(),
-                        routinemgr.getSemester(), routinemgr.getSection(), helper, TakeAttendance.this);
+  //              // if yes clicked generateOTP in AttenMgr is called
+    //            atr.generateOTP(routinemgr.getDay(), routinemgr.getPeriod(), routinemgr.getStream(mySpinner),
+      //                  routinemgr.getSemester(), routinemgr.getSection(), dataMgr, TakeAttendance.this);
             }
-        });
+        //});
 
-        // Setting Negative "NO" Button
-        alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
+        /* Setting Negative "NO" Button
+        //alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+          //  public void onClick(DialogInterface dialog, int which) {
                 //  if no clicked values are set to default
                 mySpinner.setSelection(0);
                 mySpinner1.setSelection(0);
@@ -224,7 +231,7 @@ public class TakeAttendance extends AppCompatActivity implements AdapterView.OnI
 
         // Showing Alert Message
         alertDialog.show();
-    }
+    }*/
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
@@ -232,21 +239,11 @@ public class TakeAttendance extends AppCompatActivity implements AdapterView.OnI
            switch(id1) {
 
                case R.id.spinner1:
-                   ArrayList<String> arr = new ArrayList<String>();
-                   arr = helper.getAllSemester(String.valueOf(mySpinner.getSelectedItem()));
-                   ArrayAdapter<String> arr1 = new ArrayAdapter<String>(this, simple_spinner_item, arr);
-                   arr1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                   arr1.notifyDataSetChanged();
-                   mySpinner1.setAdapter(arr1);
+                   routinemgr.getAllSemester(mySpinner1,String.valueOf(mySpinner.getSelectedItem()));
                    break;
 
                case R.id.spinner2:
-                   ArrayList<String> arr2 = new ArrayList<String>();
-                   arr2 = helper.getAllSections(String.valueOf(mySpinner.getSelectedItem()), String.valueOf(mySpinner1.getSelectedItem()));
-                   ArrayAdapter<String> arr3 = new ArrayAdapter<String>(this, simple_spinner_item, arr2);
-                   arr3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                   arr3.notifyDataSetChanged();
-                   mySpinner2.setAdapter(arr3);
+                   routinemgr.getAllSection(mySpinner2,String.valueOf(mySpinner.getSelectedItem()), String.valueOf(mySpinner1.getSelectedItem()));
                    break;
            }
 
@@ -256,44 +253,7 @@ public class TakeAttendance extends AppCompatActivity implements AdapterView.OnI
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-    private void loadStreamListInDropdown() {
-        // database handler
-         helper = new DataMgr(getApplicationContext());
 
-        // Spinner Drop down elements
-        ArrayList<String> streamList = helper.getAllStreams();
 
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, streamList);
 
-        // Drop down layout style - list view with radio button
-        dataAdapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        mySpinner.setAdapter(dataAdapter);
-
-    }
-
-     public void loadSemesterListInDropdown(String stream){
-
-         // database handler
-         helper = new DataMgr(getApplicationContext());
-
-         // Spinner Drop down elements
-         ArrayList<String> streamList = helper.getAllSemester(stream);
-
-         // Creating adapter for spinner
-         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-                 android.R.layout.simple_spinner_item, streamList);
-
-         // Drop down layout style - list view with radio button
-         dataAdapter
-                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-         // attaching data adapter to spinner
-         mySpinner1.setAdapter(dataAdapter);
-
-    }
 }
