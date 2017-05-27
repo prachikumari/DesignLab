@@ -14,7 +14,7 @@ import android.widget.Toast;
 import static android.widget.Toast.LENGTH_SHORT;
 
 //Login Page
-public class LoginScreen extends AppCompatActivity implements LoginView{
+public class LoginScreen extends AppCompatActivity implements LoginView {
 
     private static EditText username;
     private static EditText password;
