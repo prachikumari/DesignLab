@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.HashMap;
 
 /**
- * Created by Pramod on 25/05/17.
+ * Create by Pramod on 25/05/17.
  */
 
 public class DBController extends SQLiteOpenHelper {
