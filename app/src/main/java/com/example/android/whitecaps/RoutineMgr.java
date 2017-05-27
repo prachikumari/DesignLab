@@ -179,24 +179,28 @@ public class RoutineMgr  {
             else  if(getSelectedPeriod().equals("6"))
                 subjectTechercode = routine.getPeriod6();
             //Seprating subjectcode from teachercode e.g EE101
-             String subname2 = subjectTechercode.substring(0, subjectTechercode.indexOf("("));
+            String subname2 = null;
+            if(subjectTechercode!=null) {
+                subname2 = subjectTechercode.substring(0, subjectTechercode.indexOf("("));
 
 
-            //Seprating teachercode e.g SMU
-           // String tcode = subjectTechercode.substring(subjectTechercode.indexOf("(") + 1, subjectTechercode.indexOf(")"));
+                //Seprating teachercode e.g SMU
+                // String tcode = subjectTechercode.substring(subjectTechercode.indexOf("(") + 1, subjectTechercode.indexOf(")"));
 
-            //Extracting subjectname corresponding to subjectcode extracted now
+                //Extracting subjectname corresponding to subjectcode extracted now
 
-            dataMgr.getsubname(subname2,subject);
+                dataMgr.getsubname(subname2, subject);
 
 
-            //Extracting teachername corresponding to teachercode extracted now
-              subject.settName(getTeacherName(subject.gettCode()));
-            return true;
-            //showCnfirmation with a message
+                //Extracting teachername corresponding to teachercode extracted now
+                subject.settName(getTeacherName(subject.gettCode()));
+                return true;
+                //showCnfirmation with a message
 
-              //dataMgr.showConfirmation(subject.getSubName(), tname);
-
+                //dataMgr.showConfirmation(subject.getSubName(), tname);
+            }else{
+                return false;
+            }
 
         }
 

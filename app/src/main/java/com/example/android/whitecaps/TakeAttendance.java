@@ -100,6 +100,7 @@ Teacher teacher;
                         routinemgr.setSelectedSection(mySpinner2.getSelectedItem().toString());
                         routinemgr.setSelectedPeriod(mySpinner3.getSelectedItem().toString());
                         routinemgr.setSelectedDay(goal);
+                        Intent in = new Intent();
                         mAttenMgr = new AttenMgr(TakeAttendance.this,routinemgr);
                         mAttenMgr.generateOTP();
                         //mAttenMgr= new AttenMgr();

@@ -21,46 +21,62 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mainPage">
+        <activity android:name=".mainPage"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.example.android.whitecaps.DAMgr" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginScreen">
+        <activity android:name=".LoginScreen"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.example.android.whitecaps.mainPage" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Teacher_Dashboard">
+        <activity android:name=".Teacher_Dashboard"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.example.android.whitecaps.MainActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".SplashScreen">
+        <activity android:name=".SplashScreen"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TakeAttendance" />
-        <activity android:name=".GiveAttendance" />
-        <activity android:name=".OTPPage" />
-        <activity android:name=".Student_Dashboard" />
-        <activity android:name=".Admin_Dashboard" />
-        <activity android:name=".UploadDatabase" />
-        <activity android:name=".ChooseStream" />
-        <activity android:name=".Manage_Database" />
-        <activity android:name=".UploadRoutine" />
-        <activity android:name=".AddSemester" />
-        <activity android:name=".UploadTeacher" />
-        <activity android:name=".UploadStudent"></activity>
+        <activity android:name=".TakeAttendance"
+            android:screenOrientation="portrait" />
+        <activity android:name=".GiveAttendance"
+            android:screenOrientation="portrait" />
+        <activity android:name=".OTPPage"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Student_Dashboard"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Admin_Dashboard"
+            android:screenOrientation="portrait" />
+        <activity android:name=".UploadDatabase"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ChooseStream"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Manage_Database"
+            android:screenOrientation="portrait" />
+        <activity android:name=".UploadRoutine"
+            android:screenOrientation="portrait" />
+        <activity android:name=".AddSemester"
+            android:screenOrientation="portrait" />
+        <activity android:name=".UploadTeacher"
+            android:screenOrientation="portrait" />
+        <activity android:name=".UploadStudent"
+            android:screenOrientation="portrait" ></activity>
 
         <receiver
             android:name=".NetworkStateChangeReceiver"

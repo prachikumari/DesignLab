@@ -22,22 +22,26 @@ import android.widget.Toast;
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
-public class UploadTeacher extends AppCompatActivity{
+public class UploadTeacher extends AppCompatActivity implements SingleUploadBroadcastReceiver.Delegate{
     public static final String UPLOAD_URL = "http://192.168.43.109/android_connect/upload_teacher.php";
     //Pdf request code
     //private int PICK_PDF_REQUEST = 1;
     private  int PICK_CSV_REQUEST=1;
     //storage permission code
     private static final int STORAGE_PERMISSION_CODE = 123;
-    //Uri to stor`e the image uri
-    private Uri filePath;
+    //Uri to store the image uri
+    private Uri filePath = null;
     Button buttonChoose,buttonUpload,downloadtemplate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,35 +72,55 @@ public class UploadTeacher extends AppCompatActivity{
             }
         });
     }
+    private static final String TAG = "AndroidUploadService";
+
+    private final SingleUploadBroadcastReceiver uploadReceiver = new SingleUploadBroadcastReceiver();
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        uploadReceiver.register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        uploadReceiver.unregister(this);
+    }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void uploadMultipart() {
         //getting name for the image
+       if(filePath == null) {
+           Toast.makeText(this, "Please select a file and retry", Toast.LENGTH_LONG).show();
+       }
+       else {
+           String name = "Teacher_db";
+           //getting the actual path of the image
+           String path = FilePath.getPath(this, filePath);
 
-        String name="Teacher_db";
-        //getting the actual path of the image
-        String path = FilePath.getPath(this, filePath);
+           if (path == null) {
 
-        if (path == null) {
-
-            Toast.makeText(this, "Please move your .pdf file to internal storage and retry", Toast.LENGTH_LONG).show();
-        } else {
-            //Uploading code
-            try {
-                String uploadId = UUID.randomUUID().toString();
-
-                //Creating a multi part request
-                new MultipartUploadRequest(this, uploadId, UPLOAD_URL)
-                        .addFileToUpload(path, "csv") //Adding file
-                        .addParameter("name", name) //Adding text parameter to the request
-                        .setNotificationConfig(new UploadNotificationConfig())
-                        .setMaxRetries(2)
-                        .startUpload(); //Starting the upload
+               Toast.makeText(this, "Please move your .pdf file to internal storage and retry", Toast.LENGTH_LONG).show();
+           } else {
+               //Uploading code
+               try {
+                   String uploadId = UUID.randomUUID().toString();
+                   uploadReceiver.setDelegate(this);
+                   uploadReceiver.setUploadID(uploadId);
+                   //Creating a multi part request
+                   new MultipartUploadRequest(this, uploadId, UPLOAD_URL)
+                           .addFileToUpload(path, "csv") //Adding file
+                           .addParameter("name", name) //Adding text parameter to the request
+                           .setNotificationConfig(new UploadNotificationConfig())
+                           .setMaxRetries(2)
+                           .startUpload(); //Starting the upload
 
 
-            } catch (Exception exc) {
-                Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }
+               } catch (Exception exc) {
+                   Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
+               }
+           }
+       }
     }
 
     //method to show file chooser
@@ -204,5 +228,39 @@ public class UploadTeacher extends AppCompatActivity{
     }
 
 
+    @Override
+    public void onProgress(int progress) {
 
+    }
+
+    @Override
+    public void onProgress(long uploadedBytes, long totalBytes) {
+
+    }
+
+    @Override
+    public void onError(Exception exception) {
+
+    }
+
+    @Override
+    public void onCompleted(int serverResponseCode, byte[] serverResponseBody) {
+        String h=null;
+        int i=0;
+        try {
+            JSONObject response = new JSONObject(new String(serverResponseBody, "iso-8859-1"));
+            h = response.getString("yo");
+            showalert(h);
+            Toast.makeText(this,h,Toast.LENGTH_SHORT).show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onCancelled() {
+
+    }
 }

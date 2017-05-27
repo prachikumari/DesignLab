@@ -79,7 +79,7 @@ public class UploadRoutine extends AppCompatActivity implements AdapterView.OnIt
     //storage permission code
     private static final int STORAGE_PERMISSION_CODE = 123;
     //Uri to store the image uri
-    private Uri filePath;
+    private Uri filePath=null;
     //MultipartUploadRequest m;
     private ProgressDialog pDialog;
 
@@ -90,7 +90,7 @@ public class UploadRoutine extends AppCompatActivity implements AdapterView.OnIt
     //private String file_url = "file:///android_asset/Template_ROUTINE.csv";
 //    private String file_url = "WhiteCaps/app/src/main/assets/Template_ROUTINE.csv";
 
-    /**********  File Path *************/
+    /*********  File Path ************/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,7 +168,7 @@ public class UploadRoutine extends AppCompatActivity implements AdapterView.OnIt
 
    private final SingleUploadBroadcastReceiver uploadReceiver = new SingleUploadBroadcastReceiver();
 
-    @Override
+       @Override
     protected void onResume() {
         super.onResume();
         uploadReceiver.register(this);
@@ -181,7 +181,13 @@ public class UploadRoutine extends AppCompatActivity implements AdapterView.OnIt
     }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void uploadMultipart(Context context) {
+        if(filePath == null)
+        {
+            Toast.makeText(this, "Please select a file and retry", Toast.LENGTH_LONG).show();
+        }
+        else{
         //getting name for the image
+
         String stream = spinnerStream.getSelectedItem().toString().trim().toUpperCase();
         String sem=spinnerSem.getSelectedItem().toString().trim();
         String name= stream+"_"+"SEM_"+sem+"_ROUTINE";
@@ -212,7 +218,7 @@ public class UploadRoutine extends AppCompatActivity implements AdapterView.OnIt
                 Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
-    }
+    }}
 
     public void showalert(String msg)
     {

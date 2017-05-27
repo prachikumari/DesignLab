@@ -10,6 +10,26 @@ import android.content.SharedPreferences.Editor;
 
 public class SessionManager {
 
+    /*SharedPreferences prefs;
+    SharedPreferences.Editor editor;
+    Context ctx;
+
+    public SessionManager(Context ctx){
+        this.ctx = ctx;
+        prefs = ctx.getSharedPreferences("myapp", Context.MODE_PRIVATE);
+        editor = prefs.edit();
+    }
+
+    public void setLoggedin(boolean logggedin){
+        editor.putBoolean("loggedInmode",logggedin);
+        editor.commit();
+    }
+
+    public boolean loggedin(){
+        return prefs.getBoolean("loggedInmode", false);
+    }*/
+
+
 
     // Shared Preferences reference
     SharedPreferences pref;
@@ -43,7 +63,7 @@ public class SessionManager {
     }
 
     //Create login session
-    public void createUserLoginSession(String name, String email){
+    public void createUserLoginSession(String name, String actor){
         // Storing login value as TRUE
         editor.putBoolean(IS_USER_LOGIN, true);
 
@@ -51,7 +71,7 @@ public class SessionManager {
         editor.putString(KEY_NAME, name);
 
         // Storing email in pref
-        editor.putString(KEY_EMAIL, email);
+       // editor.putString(KEY_EMAIL, email);
 
         // commit changes
         editor.commit();
@@ -88,7 +108,7 @@ public class SessionManager {
     /**
      * Get stored session data
      * */
-    public HashMap<String, String> getUserDetails(){
+   public HashMap<String, String> getUserDetails(){
 
         //Use hashmap to store user credentials
         HashMap<String, String> user = new HashMap<String, String>();

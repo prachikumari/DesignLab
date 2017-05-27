@@ -20,7 +20,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="31dp"
-        android:text="Welcome "
+        android:text="Welcome to"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
@@ -31,11 +31,20 @@
         tools:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.502" />
 
+    <ImageView
+        android:id="@+id/logoimg"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@mipmap/logo"
+        android:layout_marginTop="80dp"
+        tools:layout_editor_absoluteY="129dp"
+        tools:layout_editor_absoluteX="117dp"/>
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
-        android:layout_marginTop="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="200dp"
         android:text="NAME"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
@@ -57,56 +66,25 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent" />-->
 
-    <Button
-        android:id="@+id/upload"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="160dp"
-        android:background="@color/colorPrimary"
-        android:text="MANAGE DATABASE"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.055"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintVertical_bias="0.53"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="393dp" />
 
-    <Button
-        android:id="@+id/query"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="360dp"
-        android:background="@color/colorPrimary"
-        android:text="QUERY DATABASE"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.861"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintVertical_bias="0.543"
-        tools:layout_editor_absoluteX="244dp" />
+        android:layout_height="3dp"
+        android:layout_marginTop="250dp"
+        android:background="#000000"/>
+
 
     <Button
         android:id="@+id/manage"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="280dp"
         android:background="@color/colorPrimary"
         android:text="UPLOAD DATABASE"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.422"
@@ -116,6 +94,45 @@
         tools:layout_editor_absoluteX="117dp"
 
         tools:layout_editor_absoluteY="414dp" />
+    <Button
+        android:id="@+id/upload"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="350dp"
+        android:background="@color/colorPrimary"
+        android:text="MANAGE DATABASE"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintVertical_bias="0.53"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="393dp" />
+
+    <!--<Button
+        android:id="@+id/query"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="420dp"
+        android:background="@color/colorPrimary"
+        android:text="QUERY DATABASE"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.861"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintVertical_bias="0.543"
+        tools:layout_editor_absoluteX="244dp" />-->
+
 
 </RelativeLayout>
 

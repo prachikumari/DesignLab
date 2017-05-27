@@ -19,7 +19,7 @@ public class OTPPage extends AppCompatActivity {
     private static TextView tv;
     private static TextView showClock;
     private String OTP;
-    private  String Period;
+    private  String Period,Section,Semester,Stream;
     String provider;
     LocationManager locationManager;
     String startTimeOtp;
@@ -42,6 +42,9 @@ Teacher teacher;
         Intent intent = getIntent();
         OTP = intent.getStringExtra("OTP");//OTP retrieved from AttenMgr class
         Period=intent.getStringExtra("Period");//Period retrieved from AttenMgr class
+        Section = intent.getStringExtra("section");
+        Semester = intent.getStringExtra("semester");
+        Stream = intent.getStringExtra("stream");
         teacher = intent.getParcelableExtra("teacher");
         latitude=intent.getDoubleExtra("latitude",0.0);
         longitude= intent.getDoubleExtra("longitude",0.0);
@@ -77,15 +80,31 @@ Teacher teacher;
                 //showClock.setText("done!");
                 //textViewTime.setText("done!");
                 // setProgressBarValues();
+                String date1 = mDigitalAttendanceMgr.getCurrentDate();
                 endTimeOtp=mDigitalAttendanceMgr.getCurrentTime(); //After end of two minute timer current time is stored
                 // locationl();
-                String result = OTP+","+latitude+","+longitude+"," +startTimeOtp+","+endTimeOtp+","+Period;
+                String end_time="";
+                int pos =0;
+                pos = endTimeOtp.lastIndexOf(" ");
+                if (pos > 0) {
+                    end_time = endTimeOtp.substring(0, pos);
+                }
+
+                String start_time="";
+                int pos1 =0;
+                pos1 = startTimeOtp.lastIndexOf(" ");
+                if (pos1 > 0) {
+                    start_time = startTimeOtp.substring(0, pos1);
+                }
+
+                String result = date1+","+OTP+","+latitude+","+longitude+"," +start_time+","+end_time+","+
+                        Stream+","+Semester+","+Section+","+Period;
                 FileManager frm = new FileManager(OTPPage.this,result);
                 TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
                 final String tmDevice;
                 tmDevice = "" + tm.getDeviceId();
                 //frm.SaveInInternalCache(tmDevice,teacher.getTeacherCode());
-                frm.SaveInInternalCacheStorage(tmDevice);
+                frm.SaveInInternalCacheStorage(tmDevice,"teacher");
                 //frm.LoadFromInternalCacheStorage();
                 dm = new DigitalAttendanceMgr();
                 dm.dm.showTeacherDashboard(OTPPage.this,teacher);

@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -501,33 +502,38 @@ public class DataMgr extends SQLiteOpenHelper {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(myContext);
 
         alertDialog.setTitle("Confirmation");
-        alertDialog.setMessage(subject.getSubName()+ " for " + routineMgr.getSelectedStream() + "," + " Semester " +  routineMgr.getSelectedSemester() + "during Period" + routineMgr.getSelectedPeriod()+ "is assigned to" + subject.gettName());
-        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-               DigitalAttendanceMgr atmr = new DigitalAttendanceMgr();
-                String classid = getclssid(routineMgr.getSelectedStream(),routineMgr.getSelectedSemester(),routineMgr.getSelectedSection());
-                //routineMgr.setClassId(classid);
-                 //String Otp = getOTP(classid,routineMgr.getSelectedPeriod(),routineMgr.getSelectedDay());
-                 mAttenMgr.extractOtp(classid);
+        if(subject.getSubName()!=null) {
+            alertDialog.setMessage(subject.getSubName() + " for " + routineMgr.getSelectedStream() + "," + " Semester " + routineMgr.getSelectedSemester() + " during Period " + routineMgr.getSelectedPeriod() + " is assigned to " + subject.gettName());
+            alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    DigitalAttendanceMgr atmr = new DigitalAttendanceMgr();
+                    String classid = getclssid(routineMgr.getSelectedStream(), routineMgr.getSelectedSemester(), routineMgr.getSelectedSection());
+                    //routineMgr.setClassId(classid);
+                    //String Otp = getOTP(classid,routineMgr.getSelectedPeriod(),routineMgr.getSelectedDay());
+                    mAttenMgr.extractOtp(classid);
 
 
-                //              // if yes clicked generateOTP in AttenMgr is called
-                //            atr.generateOTP(routinemgr.getDay(), routinemgr.getPeriod(), routinemgr.getStream(mySpinner),
-                //
-                //                 routinemgr.getSemester(), routinemgr.getSection(), dataMgr, TakeAttendance.this);
-            }
-        });
-        alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                //  if no clicked values are set to default
-                TakeAttendance.reset();
-                dialog.cancel();
+                    //              // if yes clicked generateOTP in AttenMgr is called
+                    //            atr.generateOTP(routinemgr.getDay(), routinemgr.getPeriod(), routinemgr.getStream(mySpinner),
+                    //
+                    //                 routinemgr.getSemester(), routinemgr.getSection(), dataMgr, TakeAttendance.this);
+                }
+            });
+            alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    //  if no clicked values are set to default
+                    TakeAttendance.reset();
+                    dialog.cancel();
 
-            }
-        });
+                }
+            });
 
         // Showing Alert Message
         alertDialog.show();
+    }
+    else{
+            Log.e("nonono","nono");
+    }
     }
 
 }

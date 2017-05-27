@@ -51,6 +51,7 @@
         android:layout_marginTop="370dp"
         android:background="@color/colorPrimary"
         android:text="LogIn"
+        android:textSize="16sp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.778"

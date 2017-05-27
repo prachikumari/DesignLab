@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -55,9 +56,14 @@ public class ChooseStream extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String stream = sp.getSelectedItem().toString();
-               Intent intent = new Intent(ChooseStream.this , AddSemester.class);
-                intent.putExtra("stream",stream);
-                startActivity(intent);
+                if(stream != null) {
+                    Intent intent = new Intent(ChooseStream.this, AddSemester.class);
+                    intent.putExtra("stream", stream);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(ChooseStream.this,"Please choose a stream first." , Toast.LENGTH_LONG).show();
+
+                }
 
 
             }

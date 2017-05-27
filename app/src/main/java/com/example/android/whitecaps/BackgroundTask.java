@@ -28,6 +28,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -44,18 +45,20 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
         String response ="";
         String line="";
         String[] name;
+    String Name ,Extension;
         ChooseStream chooseStream;
-        List list , list2 , streamlist;
+        List list , list2 , streamlist,streamlist1;
         ArrayList<String> semlist;
-        Spinner sp,sem,spinnerStream,spinnerSem;
+        Spinner sp,sem,spinnerStream,spinnerSem,spinnerStream1;
         String stream=null,semester=null;
         EditText streamTxt,semesterTxt;
-        ArrayAdapter<String> dataAdapter1,dataAdapter2;
-        Set<String> hs , hs2 , streamset,semset;
+        ArrayAdapter<String> dataAdapter1,dataAdapter2,dataAdapter3;
+        Set<String> hs , hs2 , streamset,semset,streamset1;
         String selectedStream,selectedStreamUpload;
         String fname;
         private String  templateurl;
-
+        HashMap<String, String> queryValues;
+        DBController controller;
         //Various Constructors with different parmeters
         BackgroundTask(Context context, List list1, Spinner sp1, EditText streamTxt,Set hs1)
         {
@@ -69,6 +72,12 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
         {
 
             this.templateurl=u;
+        }
+        BackgroundTask(Context context)
+        {
+
+            this.context=context;
+             controller = new DBController(this.context);
         }
         BackgroundTask(Context context,List list1,Spinner sp1,Set hs1)
         {
@@ -85,6 +94,14 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
             streamset=s;
 
         }
+    BackgroundTask( Context context,Spinner sp , List list, Set s,String j)
+    {
+       this.context =context;
+        spinnerStream1=sp;
+        streamlist1=list;
+        streamset1=s;
+
+    }
         BackgroundTask(Context context, String nam)
         {
             this.context=context;
@@ -134,6 +151,9 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
             String add_semester_url = "http://192.168.43.109/android_connect/insertSem.php";
             String fetch_stream_url = "http://192.168.43.109/android_connect/fetchStream.php";
             String compare_url = "http://192.168.43.109/android_connect/compare.php";
+            String import_url = "http://192.168.43.109/android_connect/transfer.php";
+            String teacher_cache_url = "http://192.168.43.109/android_connect/teacher_cache.php";
+            String student_cache_url = "http://192.168.43.109/android_connect/student_cache.php";
             String result = null;
             String method = params[0];
 
@@ -157,6 +177,80 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
                     InputStream is = httpURLConnection.getInputStream();
                     is.close();
                     result= "Insertion successfull";
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            else if (method.equals("addteachercache")) {
+                Name = params[1];
+                Extension = params[2];
+                try {
+                    URL url = new URL(teacher_cache_url);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    OutputStream os = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
+                    String data = URLEncoder.encode("Name","UTF-8")+"="+URLEncoder.encode(Name,"UTF-8") +"&"+
+                            URLEncoder.encode("Extension","UTF-8")+"="+URLEncoder.encode(Extension,"UTF-8");
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    os.close();
+                    //InputStream to get response from server
+                    //InputStream is = httpURLConnection.getInputStream();
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line + "\n");
+                    }
+                    bufferedReader.close();
+                    inputStream.close();
+                    response = stringBuilder.toString();
+                    httpURLConnection.disconnect();
+
+                    result= "Insertion successfull of cache";
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            else  if (method.equals("addstudentcache")) {
+                Name = params[1];
+                Extension = params[2];
+                try {
+                    URL url = new URL(student_cache_url);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    OutputStream os = httpURLConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
+                    String data = URLEncoder.encode("Name","UTF-8")+"="+URLEncoder.encode(Name,"UTF-8") +"&"+
+                            URLEncoder.encode("Extension","UTF-8")+"="+URLEncoder.encode(Extension,"UTF-8");
+                    bufferedWriter.write(data);
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
+                    os.close();
+                    //InputStream to get response from server
+                    //InputStream is = httpURLConnection.getInputStream();
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line + "\n");
+                    }
+                    bufferedReader.close();
+                    inputStream.close();
+                    response = stringBuilder.toString();
+                    httpURLConnection.disconnect();
+
+                    result= "Insertion successfull of cache";
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -508,6 +602,115 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
                     }
                     result= "streamfetched";
             }
+            else if(method.equals("fetchStream1"))
+            {
+                try {
+                    URL url = new URL(fetch_stream_url);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    //To get Response from server
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line + "\n");
+                    }
+                    bufferedReader.close();
+                    inputStream.close();
+                    response = stringBuilder.toString();
+                    httpURLConnection.disconnect();
+                    Log.e("RESPONSETAG", response);
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    //fetching stream from json
+                    JSONArray JA = new JSONArray(response);
+                    JSONObject json = null;
+                    int i;
+                    name = new String[JA.length()];
+                    for (i = 0; i < JA.length(); i++) {
+                        json = JA.getJSONObject(i);
+                        name[i] = json.getString("Stream");
+
+                    }
+
+                    for (i = 0; i < name.length; i++) {
+                        streamlist1.add(name[i]);
+                    }
+
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+                result= "streamfetched1";
+            }
+            else if(method.equals("import"))
+            {
+
+
+                try {
+                    URL url = new URL(import_url);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                    //To get Response from server
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setDoInput(true);
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+                    StringBuilder stringBuilder = new StringBuilder();
+
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line + "\n");
+                    }
+                    bufferedReader.close();
+                    inputStream.close();
+                    response = stringBuilder.toString();
+                    httpURLConnection.disconnect();
+                    //Log.e("RESPONSETAG", response);
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+
+
+
+                    JSONArray JA = new JSONArray(response);
+                    JSONObject json = null;
+                    int i;
+                    for (i = 0; i < JA.length(); i++) {
+                        // json = JA.getJSONObject(i);
+                        json = JA.getJSONObject(i);
+                        // DB QueryValues Object to insert into SQLite
+                        queryValues = new HashMap<String, String>();
+                        // Add userID extracted from Object
+                        queryValues.put("Employee_id", json.get("Employee_id").toString());
+                        // Add userName extracted from Object
+                        queryValues.put("Name", json.get("Name").toString());
+                        queryValues.put("Initials", json.get("Initials").toString());
+                        queryValues.put("Email_Id", json.get("Email_Id").toString());
+                        queryValues.put("Contact_info", json.get("Contact_info").toString());
+                        // Insert User into SQLite DB
+                        controller.insertUser(queryValues);
+
+
+                    }
+                    //reloadActivity();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                result="imported";
+            }
+
             //fetch data
             else
             {
@@ -611,6 +814,15 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
             dataAdapter1 = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, streamlist);
             spinnerStream.setAdapter(dataAdapter1);
         }
+        else if(result.equals("streamfetched1"))
+        {
+            streamset1.addAll(streamlist1);
+            streamlist1.clear();
+            streamlist1.addAll(streamset1);
+            streamset1.clear();// list.add(stream);
+            dataAdapter3 = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, streamlist1);
+            spinnerStream1.setAdapter(dataAdapter3);
+        }
         else if(result.equals("fetchsemester"))
         {
            // semesterTxt.setText("");
@@ -625,7 +837,19 @@ public class BackgroundTask extends AsyncTask<String,Void,String> {
         {
 
         }
+        else if(result.equals("imported"))
+        {
+
+        }
         else if(result.equals("downloadsuccess"))
+        {
+
+        }
+        else if(result.equals("Insertion successfull of cache"))
+        {
+
+        }
+        else if(result == null)
         {
 
         }

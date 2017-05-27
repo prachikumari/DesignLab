@@ -19,7 +19,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="31dp"
-        android:text="Welcome "
+        android:text="Welcome to"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
@@ -30,6 +30,16 @@
         tools:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.502" />
 
+    <ImageView
+        android:id="@+id/logoimg"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/logo"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="140dp"
+        tools:layout_editor_absoluteY="129dp"
+        tools:layout_editor_absoluteX="117dp"/>
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
@@ -38,7 +48,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="230dp"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
@@ -60,17 +70,23 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent" /> -->
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginTop="280dp"
+        android:background="#000000"/>
+
     <Button
         android:id="@+id/upload"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="320dp"
         android:background="@color/colorPrimary"
         android:text="Take Attendance"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="17sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.055"

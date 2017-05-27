@@ -62,6 +62,7 @@ class AttenMgr {
          } catch (ParseException e) {e.printStackTrace();}
          return  value1;
      }
+
      @RequiresApi(api = Build.VERSION_CODES.N)
      public  void takeAttendance(Context context, Teacher teacher, double latitude, double longitutde)
      {   boolean value = getCurrentTimeValue(context);
@@ -107,6 +108,19 @@ class AttenMgr {
         });
         alertDialog.show();
     }
+    public void showalert1(String s)
+    {
+        AlertDialog alertDialog = new AlertDialog.Builder(myContext).create();
+        alertDialog.setTitle("Error");
+        alertDialog.setMessage(s);
+        alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // return;
+            }
+        });
+        alertDialog.show();
+    }
 
     public  void generateOTP() {
         subject = new Subject();
@@ -144,7 +158,10 @@ class AttenMgr {
             {
                 showalerttime(context);//showing alert
             }
-        }}
+        }else{
+
+        }
+    }
 
 
  public int checkLocation(Context context)
@@ -157,8 +174,8 @@ class AttenMgr {
          double longitude = gps.getLongitude();
          //addr =gps.getCompleteAddressString(latitude,longitude);
          if(latitude != 0.0 && longitude != 0.0) {
-             Toast.makeText(context, "Your Location is - \nLat: " + latitude + "\nLong: " +
-                     longitude, Toast.LENGTH_LONG).show();
+             /*Toast.makeText(context, "Your Location is - \nLat: " + latitude + "\nLong: " +
+                     longitude, Toast.LENGTH_LONG).show();*/
                      return 1;
         }else{
              Toast.makeText(context, "Try Again", Toast.LENGTH_LONG).show();
@@ -170,15 +187,25 @@ class AttenMgr {
          // Ask user to enable GPS/network in settings.
          gps.showSettingsAlert();
         return 0;
+
      }
  }
 
     public void extractOtp(String classid) {
-        String Otp =getOTP(classid);
-        digitalAttendanceMgr= new DigitalAttendanceMgr();
-        digitalAttendanceMgr.dm.showOTP(Otp, myContext, getRoutineMgr().getSelectedPeriod(), getRoutineMgr().teacher, getRoutineMgr().getLatitude(),
-                getRoutineMgr().getLongitude());
-
+        if (classid == null) {
+            showalert1("Data not present for these fields");
+        } else {
+            String Otp = getOTP(classid);
+            if (Otp == null) {
+                showalert1("Data not present for these fields");
+            } else {
+                digitalAttendanceMgr = new DigitalAttendanceMgr();
+                digitalAttendanceMgr.dm.showOTP(Otp, myContext, getRoutineMgr().getSelectedPeriod(), getRoutineMgr().getSelectedSection(),
+                        getRoutineMgr().getSelectedSemester(), getRoutineMgr().getSelectedStream(),
+                        getRoutineMgr().teacher, getRoutineMgr().getLatitude(),
+                        getRoutineMgr().getLongitude());
+            }
+        }
     }
 
     public void submit(String enterOtp,double latitude , double longitude,Student student)
@@ -200,14 +227,20 @@ class AttenMgr {
             digitalAttendanceMgr = new DigitalAttendanceMgr();
             String time1  = digitalAttendanceMgr.getCurrentTime();
             String date1 = digitalAttendanceMgr.getCurrentDate();
+            int pos=0;
+            pos = time1.lastIndexOf(" ");
+            String tme="";
+            if (pos > 0) {
+                tme = time1.substring(0, pos);
+            }
             String result = date1+","+
-                    time1+","+latitude+","+longitude+","
+                    tme+","+latitude+","+longitude+","
                     +enterOtp+","+student.getStudEnrollID()+ ","+student.getName()+","
                     +student.getSemester()+","+student.getStream()+","+student.getSection()+","
                     +tmDevice+","+androidId;
             //Toast.makeText(GiveAttendance.this,result,Toast.LENGTH_LONG).show();
             FileManager fm = new FileManager(myContext,result);
-            fm.SaveInInternalCacheStorage(tmDevice);
+            fm.SaveInInternalCacheStorage(tmDevice,"student");
             //fm.LoadFromInternalCacheStorage();
             Toast.makeText(myContext,"Attendance Taken Successfully. Thank you!",Toast.LENGTH_LONG).show();
             digitalAttendanceMgr.dm.showStudentDasbord(myContext,student);
@@ -217,5 +250,3 @@ class AttenMgr {
 
 
 }
-
-

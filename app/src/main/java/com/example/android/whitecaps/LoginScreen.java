@@ -47,9 +47,6 @@ public class LoginScreen extends AppCompatActivity implements LoginView{
         login_btn = (Button)findViewById(R.id.button_login);
         presenter =  new LoginPresenter(this,service);
 
-        Toast.makeText(getApplicationContext(),
-                "User Login Status: " + session.isUserLoggedIn(),
-                Toast.LENGTH_LONG).show();
 
         Intent intent=getIntent();
         String str = intent.getStringExtra("mystr");//getting value from mainPage(i.e 1/2/3)
@@ -62,6 +59,8 @@ public class LoginScreen extends AppCompatActivity implements LoginView{
         if(i==3) table="admin";
         //table name is set as per value
         LoginButton(table);//method called
+
+
     }
 
 
@@ -126,5 +125,9 @@ public class LoginScreen extends AppCompatActivity implements LoginView{
     @Override
     public void showLoginError(int resId) {
         Toast.makeText(this, getString(resId), LENGTH_SHORT).show();
+    }
+    public void onBackPressed()
+    {
+        startActivity(new Intent(this , mainPage.class));
     }
 }

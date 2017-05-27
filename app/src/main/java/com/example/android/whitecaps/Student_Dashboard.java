@@ -14,11 +14,12 @@ public class Student_Dashboard extends AppCompatActivity {
     private String usr_name;
     String table_name;
     private static TextView username;
-    private static TextView course;
+    private static TextView course,sem,section;
     private static TextView locn;
     private static Button btn;
     DataMgr d;
     private String lat,lon,addr;
+    SessionManager session;
     GPSTracker gps;
     //Student student;
     Student student;
@@ -29,14 +30,18 @@ public class Student_Dashboard extends AppCompatActivity {
         setContentView(R.layout.activity_student__dashboard);
         btn= (Button)findViewById(R.id.giveatten);
 
-        
+        session =new SessionManager(this);
         Intent intent = getIntent();
         student = intent.getParcelableExtra("m");
         username=(TextView)findViewById(R.id.textView2);
         course=(TextView)findViewById(R.id.textView3);
+        sem=(TextView)findViewById(R.id.semname);
+        section=(TextView)findViewById(R.id.secname);
 
         username.setText(student.getName());// name set in textview
         course.setText(student.getStream());
+        sem.setText(student.getSemester());
+        section.setText(student.getSection());
         checkLocation();
     }
 
