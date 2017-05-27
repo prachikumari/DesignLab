@@ -167,8 +167,10 @@ class AttenMgr {
  public int checkLocation(Context context)
  {
 
+     boolean condition1 = gps.isMockSettingsON(context);
+     boolean condition2 = gps.areThereMockPermissionApps(context);
      // Check if GPS enabled
-     if (gps.canGetLocation()) {
+     if (gps.canGetLocation() && condition1!=true && condition2!=true) {
 
          double latitude = gps.getLatitude();
          double longitude = gps.getLongitude();
