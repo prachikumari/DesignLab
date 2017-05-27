@@ -35,6 +35,7 @@ public class OTPPage extends AppCompatActivity {
     //    GPSTracker gps;
 Teacher teacher;
     @RequiresApi(api = Build.VERSION_CODES.N)
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {//execution starts here
         super.onCreate(savedInstanceState);
