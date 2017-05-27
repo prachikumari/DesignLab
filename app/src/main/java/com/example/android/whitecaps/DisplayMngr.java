@@ -8,6 +8,7 @@ import android.content.Intent;
  * Created by User on 08-05-2017.
  */
 //DisplayMngr to show different screens
+
 public class DisplayMngr {
 
             DigitalAttendanceMgr digitalAttendanceMgr;
