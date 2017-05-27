@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class GiveAttendance extends AppCompatActivity {
+public class GiveAttendance extends AppCompatActivity  {
 
     EditText enterotp;
     Button submit;
