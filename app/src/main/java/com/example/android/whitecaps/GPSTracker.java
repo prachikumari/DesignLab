@@ -139,7 +139,7 @@ public class GPSTracker extends Context implements LocationListener {
 
 
     FileManager fm;
-    public void onLocationChanged(Location loc) {
+    public void onLocationChanged(Location loc){
         loc.getLatitude();
         loc.getLongitude();
         Text =loc.getLatitude() + "," + loc.getLongitude();
