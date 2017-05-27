@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 //Student Dashboard
-public class Student_Dashboard extends AppCompatActivity {
+public class Student_Dashboard extends AppCompatActivity{
     private String usr_name;
     String table_name;
     private static TextView username;
