@@ -77,7 +77,7 @@ public class FilePath
                 return getDataColumn(context, contentUri, selection, selectionArgs);
             }
         }
-        // MediaStore (and general)
+        // MediaStore (and genera)
         else if ("content".equalsIgnoreCase(uri.getScheme())) {
 
             // Return the remote address
