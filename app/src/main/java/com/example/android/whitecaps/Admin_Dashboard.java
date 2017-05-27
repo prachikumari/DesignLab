@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 //Admin Dashboard is an activity class where admin clicks
 // on upload database,manage database and query database
-//to perform respective actions
+//to perform respective action
 public class Admin_Dashboard extends AppCompatActivity {
 
              private static TextView username;
