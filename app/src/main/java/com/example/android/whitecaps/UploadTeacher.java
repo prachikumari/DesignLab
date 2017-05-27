@@ -33,7 +33,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
-public class UploadTeacher extends AppCompatActivity implements SingleUploadBroadcastReceiver.Delegate{
+public class UploadTeacher extends AppCompatActivity implements SingleUploadBroadcastReceiver.Delegate {
     public static final String UPLOAD_URL = "http://192.168.43.109/android_connect/upload_teacher.php";
     //Pdf request code
     //private int PICK_PDF_REQUEST = 1;
